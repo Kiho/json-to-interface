@@ -1,0 +1,39 @@
+<div ref:counter></div>
+
+<button on:click="set({showH2: !showH2})">{{showH2 ? 'Hide' : 'Show'}}</button>
+
+<script>
+	import store from '../../store/store';
+	import H2 from './H2.html';
+
+	function createH2(target){
+		return new H2({
+			target,
+			data: store.getState()
+		});
+	}
+
+	function destroyH2(h2){
+		h2.destroy();
+	}
+
+	export default {
+		data() {
+            return {
+				showH2: true
+            };
+        },
+		oncreate() {
+			this.observe('showH2', showH2 => {
+				if (showH2) {
+				    this.h2 = createH2(this.refs.counter);
+				} else {
+					destroyH2(this.h2);
+				}
+			});			
+		},
+		ondestroy(){
+            destroyH2(this.h2);
+        }
+	};
+</script>

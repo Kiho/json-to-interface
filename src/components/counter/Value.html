@@ -1,0 +1,31 @@
+<div ref:counter></div>
+
+<button on:click="set({show: !show})">{{show ? 'Hide' : 'Show'}}</button>
+<button on:click="increment2()">+2</button>
+<button on:click="decrement2()">-2</button>
+
+<script>
+	import H2 from './H2.html';
+	import { mapActions } from "../../store/actions";
+
+	const { increment2, decrement2 } = mapActions;
+	const mapToProps = ({ counter }) => ({ counter });
+
+	export default {
+		data() {
+            return {
+				show: true
+            };
+        },
+		setup: function(ctor) {
+			ctor.show = (x, store) => store.create(H2, x.refs.counter);
+		},
+		oncreate() {
+			this.connect(mapToProps, mapActions);
+		},
+		methods: {
+			decrement2,
+			increment2
+		}
+	};
+</script>
