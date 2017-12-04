@@ -36,13 +36,20 @@ function printInferredTypes(fileNames, options) {
     function printJsonType(name, symbol) {
         if (symbol.members) {
             console.log("export interface " + capitalize(name) + " {");
-            symbol.members.forEach(function (member, k) {
-                // const k = member.name;
+            symbol.members.forEach(function (member) {
+                var k = member.name;
+                var memberDeclaration = member.declarations[0];
                 var typeName = null;
-                if (member.declarations[0]) {
-                    var memberType = checker.getTypeOfSymbolAtLocation(member, member.declarations[0]);
-                    if (memberType) {
-                        typeName = getMemberTypeName(k, memberType);                        
+                if (memberDeclaration) {
+                    if (memberDeclaration.kind == ts.SyntaxKind.MethodDeclaration) {
+                        var signature = checker.getSignatureFromDeclaration(memberDeclaration);
+                        typeName = checker.signatureToString(signature);
+                    }
+                    else {
+                        var memberType = checker.getTypeOfSymbolAtLocation(member, memberDeclaration);
+                        if (memberType) {
+                            typeName = getMemberTypeName(k, memberType);
+                        }
                     }
                 }
                 if (!typeName) {
@@ -85,23 +92,7 @@ function printInferredTypes(fileNames, options) {
                 }
                 return typeName;
             }
-            else if (memberType.symbol.name == '__function') {
-                var elementType = memberType.typeArguments[0];
-                if (elementType && elementType.symbol) {
-                    var elementTypeName = capitalize(stripS(memberName));
-                    if (!knownTypes[elementTypeName]) {
-                        knownTypes[elementTypeName] = true;
-                        pendingTypes.push({ name: elementTypeName, symbol: elementType.symbol });
-                    }
-                    return elementTypeName;
-                }
-            }
             else {
-                // if (k === 'data')
-                if (memberName == 'data') {
-                    console.log("memberType.name ", memberName, memberType.flags);
-                    console.log("memberType.symbol ", memberType.symbol.name);
-                }
                 return null;
             }
         }

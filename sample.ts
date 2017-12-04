@@ -6,9 +6,10 @@ let raceCarDriver = {
         maxSpeed: 120,
         isWastingGazoline: true,
     }],
-    data: () => {
+    data() {
         return { 
-            id: 1
+            id: 1,
+            name: 'Kiho'
         }
     }
 };

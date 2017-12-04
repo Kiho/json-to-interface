@@ -42,11 +42,17 @@ function printInferredTypes(fileNames: string[], options: ts.CompilerOptions): v
             console.log(`export interface ${capitalize(name)} {`);
             symbol.members.forEach(member => {
                 const k = member.name;
+                const memberDeclaration = member.declarations[0];
                 let typeName = null;
-                if (member.declarations[0]) {
-                    let memberType = checker.getTypeOfSymbolAtLocation(member, member.declarations[0]);
-                    if (memberType) {
-                        typeName = getMemberTypeName(k, memberType);
+                if (memberDeclaration) {
+                    if (memberDeclaration.kind == ts.SyntaxKind.MethodDeclaration) {
+                        const signature = checker.getSignatureFromDeclaration(<ts.MethodDeclaration>memberDeclaration);
+                        typeName = checker.signatureToString(signature);
+                    } else {
+                        let memberType = checker.getTypeOfSymbolAtLocation(member, memberDeclaration);
+                        if (memberType) {
+                            typeName = getMemberTypeName(k, memberType);
+                        }
                     }
                 }
                 if (!typeName) {

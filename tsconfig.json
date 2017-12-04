@@ -10,7 +10,8 @@
     },
     "target": "ES5",
     "include": [
-        "sample.ts"
+        "sample.ts",
+        "src/**/*.ts"
     ],
     "exclude": [
         "node_modules"

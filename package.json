@@ -7,8 +7,7 @@
     "typescript",
     "interface"
   ],
-  "scripts": {
-  },
+  "scripts": {},
   "author": "Kiho Chang",
   "private": true,
   "devDependencies": {
