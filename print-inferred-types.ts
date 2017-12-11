@@ -1,4 +1,5 @@
 import * as ts from "typescript";
+import { String, StringBuilder } from "./string-operations"
 
 let fileName = process.argv[2];
 
@@ -9,6 +10,9 @@ function printInferredTypes(fileNames: string[], options: ts.CompilerOptions): v
     let knownTypes: {[name: string]: boolean} = {};
     let pendingTypes: {name: string, symbol: ts.Symbol}[] = [];
 
+    const sbData = new StringBuilder('');
+    const sbMethods = new StringBuilder('');
+
     for (const sourceFile of program.getSourceFiles()) {
         if (sourceFile.fileName == fileName) {
             ts.forEachChild(sourceFile, visit);
@@ -18,6 +22,17 @@ function printInferredTypes(fileNames: string[], options: ts.CompilerOptions): v
     while (pendingTypes.length > 0) {
         let pendingType = pendingTypes.shift();
         printJsonType(pendingType.name, pendingType.symbol);
+    }
+
+    let output = sbData.ToString();
+    console.log(`interface IOptions `);
+    if (output) {
+        console.log(output);
+    }
+    // console.log(`}`);
+    output = sbMethods.ToString();
+    if (output) {
+        console.log(output);
     }
 
     function visit(node: ts.Node) {
@@ -40,6 +55,7 @@ function printInferredTypes(fileNames: string[], options: ts.CompilerOptions): v
     function printJsonType(name: string, symbol: ts.Symbol) {
         if (symbol.members) {
             console.log(`export interface ${capitalize(name)} {`);
+            const isMethods = name === 'Methods';
             symbol.members.forEach(member => {
                 const k = member.name;
                 const memberDeclaration = member.declarations[0];
@@ -48,6 +64,9 @@ function printInferredTypes(fileNames: string[], options: ts.CompilerOptions): v
                     if (memberDeclaration.kind == ts.SyntaxKind.MethodDeclaration) {
                         const signature = checker.getSignatureFromDeclaration(<ts.MethodDeclaration>memberDeclaration);
                         typeName = checker.signatureToString(signature);
+                        if (isMethods) {
+                            sbMethods.Append(`    ${k}: ${typeName};`);
+                        }
                     } else {
                         let memberType = checker.getTypeOfSymbolAtLocation(member, memberDeclaration);
                         if (memberType) {
@@ -59,6 +78,10 @@ function printInferredTypes(fileNames: string[], options: ts.CompilerOptions): v
                     console.log(`// Sorry, could not get type name for ${k}!`);
                 } else {
                     console.log(`    ${k}: ${typeName};`);
+                    if (k === 'data') {
+                        const options = typeName.replace('():', '');
+                        sbData.Append(`    ${String.replaceAll(options, ': ', '?: ')};`);
+                    }
                 }
             });
             console.log(`}`);

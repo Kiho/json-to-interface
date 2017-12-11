@@ -1,12 +1,15 @@
 "use strict";
 exports.__esModule = true;
 var ts = require("typescript");
+var string_operations_1 = require("./string-operations");
 var fileName = process.argv[2];
 function printInferredTypes(fileNames, options) {
     var program = ts.createProgram(fileNames, options);
     var checker = program.getTypeChecker();
     var knownTypes = {};
     var pendingTypes = [];
+    var sbData = new string_operations_1.StringBuilder('');
+    var sbMethods = new string_operations_1.StringBuilder('');
     for (var _i = 0, _a = program.getSourceFiles(); _i < _a.length; _i++) {
         var sourceFile = _a[_i];
         if (sourceFile.fileName == fileName) {
@@ -16,6 +19,16 @@ function printInferredTypes(fileNames, options) {
     while (pendingTypes.length > 0) {
         var pendingType = pendingTypes.shift();
         printJsonType(pendingType.name, pendingType.symbol);
+    }
+    var output = sbData.ToString();
+    console.log("interface IOptions ");
+    if (output) {
+        console.log(output);
+    }
+    // console.log(`}`);
+    output = sbMethods.ToString();
+    if (output) {
+        console.log(output);
     }
     function visit(node) {
         if (node.kind == ts.SyntaxKind.VariableStatement) {
@@ -36,6 +49,7 @@ function printInferredTypes(fileNames, options) {
     function printJsonType(name, symbol) {
         if (symbol.members) {
             console.log("export interface " + capitalize(name) + " {");
+            var isMethods_1 = name === 'Methods';
             symbol.members.forEach(function (member) {
                 var k = member.name;
                 var memberDeclaration = member.declarations[0];
@@ -44,6 +58,9 @@ function printInferredTypes(fileNames, options) {
                     if (memberDeclaration.kind == ts.SyntaxKind.MethodDeclaration) {
                         var signature = checker.getSignatureFromDeclaration(memberDeclaration);
                         typeName = checker.signatureToString(signature);
+                        if (isMethods_1) {
+                            sbMethods.Append("    " + k + ": " + typeName + ";");
+                        }
                     }
                     else {
                         var memberType = checker.getTypeOfSymbolAtLocation(member, memberDeclaration);
@@ -57,6 +74,10 @@ function printInferredTypes(fileNames, options) {
                 }
                 else {
                     console.log("    " + k + ": " + typeName + ";");
+                    if (k === 'data') {
+                        var options_1 = typeName.replace('():', '');
+                        sbData.Append("    " + string_operations_1.String.replaceAll(options_1, ': ', '?: ') + ";");
+                    }
                 }
             });
             console.log("}");

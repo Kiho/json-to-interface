@@ -1,7 +1,8 @@
 let test = {
     data() {
         return {
-            show: true
+            show: true,
+            count: 0
         };
     },
     setup(ctor) {
