@@ -18,6 +18,8 @@ function printInferredTypes(fileName: string, name:string, options: ts.CompilerO
     const sbMethods = new StringBuilder('');
     const sbOutput = new StringBuilder('');
 
+    fileName = fileName.split('\\').join('/');
+
     for (const sourceFile of program.getSourceFiles()) {
         if (sourceFile.fileName == fileName) {
             ts.forEachChild(sourceFile, visit);
@@ -32,7 +34,8 @@ function printInferredTypes(fileName: string, name:string, options: ts.CompilerO
     const moduleName = capitalize(name.replace('.html', ''));
     const outputOptions = sbData.ToString();
     if (outputOptions) {
-        sbOutput.Append(`interface ${moduleName}Options\n`);
+        sbOutput.Append(`interface ${moduleName}Options `);
+        sbOutput.Append(outputOptions + '\n');
     }
 
     const outputMethods = sbMethods.ToString();
@@ -90,7 +93,7 @@ function printInferredTypes(fileName: string, name:string, options: ts.CompilerO
                     console.log(`    ${k}: ${typeName};`);
                     if (k === 'data') {
                         const options = typeName.replace('():', '');
-                        sbData.Append(`    ${String.replaceAll(options, ': ', '?: ')};`);
+                        sbData.Append(`    ${String.replaceAll(options, ': ', '?: ')}`);
                     }
                 }
             });

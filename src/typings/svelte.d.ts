@@ -1,9 +1,8 @@
 declare class Svelte<T> {
   constructor(options: { target: Element, data?: any, store?: any });
 
-//   get(): T;
-//   get(name: string): any;
-  get(name?: string): T;
+  get(): T;
+  get(name: string): any;
 
   set(data: T);
 

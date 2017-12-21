@@ -15,6 +15,7 @@ function printInferredTypes(fileName, name, options) {
     var sbData = new string_operations_1.StringBuilder('');
     var sbMethods = new string_operations_1.StringBuilder('');
     var sbOutput = new string_operations_1.StringBuilder('');
+    fileName = fileName.split('\\').join('/');
     for (var _i = 0, _a = program.getSourceFiles(); _i < _a.length; _i++) {
         var sourceFile = _a[_i];
         if (sourceFile.fileName == fileName) {
@@ -28,7 +29,8 @@ function printInferredTypes(fileName, name, options) {
     var moduleName = capitalize(name.replace('.html', ''));
     var outputOptions = sbData.ToString();
     if (outputOptions) {
-        sbOutput.Append("interface " + moduleName + "Options\n");
+        sbOutput.Append("interface " + moduleName + "Options ");
+        sbOutput.Append(outputOptions + '\n');
     }
     var outputMethods = sbMethods.ToString();
     if (outputMethods) {
@@ -85,7 +87,7 @@ function printInferredTypes(fileName, name, options) {
                     console.log("    " + k + ": " + typeName + ";");
                     if (k === 'data') {
                         var options_1 = typeName.replace('():', '');
-                        sbData.Append("    " + string_operations_1.String.replaceAll(options_1, ': ', '?: ') + ";");
+                        sbData.Append("    " + string_operations_1.String.replaceAll(options_1, ': ', '?: '));
                     }
                 }
             });
