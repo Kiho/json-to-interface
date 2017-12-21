@@ -32,11 +32,16 @@ function printInferredTypes(fileName, name, options) {
         sbOutput.Append("interface " + moduleName + "Options ");
         sbOutput.Append(outputOptions + '\n');
     }
+    sbOutput.Append("declare class " + moduleName + " extends Svelte<" + moduleName + "Options>\n");
     var outputMethods = sbMethods.ToString();
     if (outputMethods) {
-        sbOutput.Append(outputMethods + '\n');
+        outputMethods = string_operations_1.String.replaceAll(outputMethods, '): ', ' => ');
+        outputMethods = string_operations_1.String.replaceAll(outputMethods, '; ', ';\n');
+        sbOutput.Append("{\n" + outputMethods + "\n}\n");
     }
-    sbOutput.Append("declare class " + moduleName + " extends Svelte<" + moduleName + "Options> { }\n");
+    else {
+        sbOutput.Append('{ }\n');
+    }
     sbOutput.Append("export default " + moduleName);
     var result = sbOutput.ToString();
     // console.log(result);
@@ -87,7 +92,8 @@ function printInferredTypes(fileName, name, options) {
                     console.log("    " + k + ": " + typeName + ";");
                     if (k === 'data') {
                         var options_1 = typeName.replace('():', '');
-                        sbData.Append("    " + string_operations_1.String.replaceAll(options_1, ': ', '?: '));
+                        options_1 = string_operations_1.String.replaceAll(options_1, ': ', '?: ');
+                        sbData.Append("    " + string_operations_1.String.replaceAll(options_1, '; ', ';\n'));
                     }
                 }
             });

@@ -38,11 +38,18 @@ function printInferredTypes(fileName: string, name:string, options: ts.CompilerO
         sbOutput.Append(outputOptions + '\n');
     }
 
-    const outputMethods = sbMethods.ToString();
+    sbOutput.Append(`declare class ${moduleName} extends Svelte<${moduleName}Options>\n`);
+
+    let outputMethods = sbMethods.ToString();
     if (outputMethods) {
-        sbOutput.Append(outputMethods + '\n');
+        outputMethods = String.replaceAll(outputMethods, '): ', ' => ');
+        outputMethods = String.replaceAll(outputMethods, '; ', ';\n');
+        sbOutput.Append(`{\n${outputMethods}\n}\n`);
     }
-    sbOutput.Append(`declare class ${moduleName} extends Svelte<${moduleName}Options> { }\n`); 
+    else {
+        sbOutput.Append('{ }\n');
+    }
+
     sbOutput.Append(`export default ${moduleName}`);
     const result = sbOutput.ToString();
     // console.log(result);
@@ -92,8 +99,9 @@ function printInferredTypes(fileName: string, name:string, options: ts.CompilerO
                 } else {
                     console.log(`    ${k}: ${typeName};`);
                     if (k === 'data') {
-                        const options = typeName.replace('():', '');
-                        sbData.Append(`    ${String.replaceAll(options, ': ', '?: ')}`);
+                        let options = typeName.replace('():', '');
+                        options = String.replaceAll(options, ': ', '?: ')
+                        sbData.Append(`    ${String.replaceAll(options, '; ', ';\n')}`);
                     }
                 }
             });

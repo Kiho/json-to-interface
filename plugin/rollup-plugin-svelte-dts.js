@@ -10,10 +10,9 @@ export default function svelteCombinerDts(
 	{ extensions = ['.html', '.svelte'] } = {}
 ) {
     const externalFiles = new Set()
-    console.log('svelteCombiner');
+    console.log('svelteCombiner + d.ts');
 	return {
 		load: id => {
-            console.log('svelteCombiner - id', id);
 			if (externalFiles.has(id)) {
 				return ''
 			}
@@ -45,7 +44,7 @@ ${js}
 							if (paths.length === 1) paths = id.split('\\');
 							const name = paths[paths.length - 1];
 							const filePath = baseId + '.ts';
-                            console.log('name, filePath', name, filePath);
+                            // console.log('name, filePath', name, filePath);
                             writeFileSync(filePath, js.replace('export default ', `let ${name} = `));
 							const dts = printInferredTypes(filePath, name);
 							writeFileSync(`${baseId}.html.d.ts`, dts);

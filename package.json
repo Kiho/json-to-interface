@@ -16,7 +16,8 @@
   "private": true,
   "devDependencies": {
     "@types/node": "^8.0.53",
-    "redux-zero": "^4.7.0",
+    "fuse.js": "^3.2.0",
+    "npm-run-all": "^4.1.1",
     "rollup": "^0.50.0",
     "rollup-plugin-buble": "^0.17.0",
     "rollup-plugin-commonjs": "^8.2.6",

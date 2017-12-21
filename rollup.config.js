@@ -17,9 +17,9 @@ export default {
 	output: {
 		sourcemap: true,	
 		format: 'iife',
-		file: 'public/js/bundle.min.js'
+		file: 'public/app.js',
 	},
-	name: 'bundle',
+	name: 'app',
 	plugins: [
 		commonjs(),
 		sveltedts(),
@@ -27,7 +27,7 @@ export default {
 		svelte({
 			dev: !production,
 			css: css => {
-				css.write( 'public/css/bundle.min.css', false );
+				css.write('public/app.css');
 			},
 			cascade: true
 		}),
