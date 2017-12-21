@@ -1,12 +1,12 @@
 import { readFile, writeFileSync, unlinkSync } from 'fs'
-import printInferredTypes from './print-types'
+import printInferredTypes from './inferred-types'
 
 const readText = filename =>
 	new Promise(res =>
 		readFile(filename, (err, data) => (err ? res(null) : res(data.toString())))
 	)
 
-export default function svelteCombiner(
+export default function svelteCombinerDts(
 	{ extensions = ['.html', '.svelte'] } = {}
 ) {
     const externalFiles = new Set()
@@ -24,11 +24,8 @@ export default function svelteCombiner(
 				const cssId = baseId + '.css'
 				externalFiles.add(jsId);
                 externalFiles.add(cssId);
-                // console.log('svelteCombiner - extension, jsId', extension, jsId);
 				return Promise.all([id, jsId, cssId].map(readText)).then(
 					([html, js, css]) => {
-                        // console.log('js', js);
-                        // console.log('css', css);
                         const r = js
 							? css
 								? `${html}

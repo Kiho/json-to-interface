@@ -7,7 +7,7 @@ export default {
     data() {
         return {
             showH2: true,
-            showH2_aa: true,
+            showH2_aa: false,
         };
     },
     oncreate() {

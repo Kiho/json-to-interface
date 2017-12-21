@@ -15,7 +15,7 @@ const h2 = new H2({
 function h2extend(c: H2) {
 	const { showH2, showH2_aa } = c.get();
 	const aa = c.get('showH2_aa');
-	console.log('h2extend - showH2', showH2);
+	console.log('h2extend - showH2', showH2, showH2_aa);
 }
 
 h2extend(h2);

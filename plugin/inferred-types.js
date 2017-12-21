@@ -140,3 +140,4 @@ function printInferredTypes(fileName, name, options) {
     }
 }
 export default printInferredTypes;
+// exports["default"] = printInferredTypes;
