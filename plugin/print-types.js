@@ -2,34 +2,56 @@
 exports.__esModule = true;
 var ts = require("typescript");
 var string_operations_1 = require("./string-operations");
-var fileName = process.argv[2];
-function printInferredTypes(fileNames, options) {
-    var program = ts.createProgram(fileNames, options);
+var defaultOptions = {
+    noEmitOnError: true, noImplicitAny: true,
+    target: ts.ScriptTarget.ES5, module: ts.ModuleKind.CommonJS
+};
+function printInferredTypes(fileName, name, options) {
+    if (options === void 0) { options = defaultOptions; }
+    // var resultFile;
+    // if (sourceText) {
+    //     resultFile = ts.createSourceFile(fileName, sourceText, ts.ScriptTarget.Latest, /*setParentNodes*/ false, ts.ScriptKind.TS);
+    //     console.log('resultFile', resultFile);
+    // }
+    var program = ts.createProgram([fileName], options);
     var checker = program.getTypeChecker();
     var knownTypes = {};
     var pendingTypes = [];
     var sbData = new string_operations_1.StringBuilder('');
     var sbMethods = new string_operations_1.StringBuilder('');
+
+    var sbOutput = new string_operations_1.StringBuilder('');
     for (var _i = 0, _a = program.getSourceFiles(); _i < _a.length; _i++) {
         var sourceFile = _a[_i];
         if (sourceFile.fileName == fileName) {
+            console.log("fileName ", sourceFile.fileName);
             ts.forEachChild(sourceFile, visit);
         }
     }
+    // ts.forEachChild(resultFile, visit);
+
     while (pendingTypes.length > 0) {
         var pendingType = pendingTypes.shift();
         printJsonType(pendingType.name, pendingType.symbol);
     }
+    name = capitalize(name.replace('.html', ''));
     var output = sbData.ToString();
-    console.log("interface IOptions ");
+    sbOutput.Append(`interface ${name}Options`);
     if (output) {
-        console.log(output);
+        sbOutput.Append(output + '\n');
     }
     // console.log(`}`);
     output = sbMethods.ToString();
     if (output) {
-        console.log(output);
+        sbOutput.Append(output + '\n');
     }
+    sbOutput.Append(`declare class ${name} extends Svelte<${name}Options>`); 
+    sbOutput.Append(`{ }\n`);
+    sbOutput.Append(`export default ${name}`);
+    const result = sbOutput.ToString();
+    console.log(result);
+    return result;
+
     function visit(node) {
         if (node.kind == ts.SyntaxKind.VariableStatement) {
             node.declarationList.declarations.forEach(function (declaration) {
@@ -76,7 +98,7 @@ function printInferredTypes(fileNames, options) {
                     console.log("    " + k + ": " + typeName + ";");
                     if (k === 'data') {
                         var options_1 = typeName.replace('():', '');
-                        sbData.Append("    " + string_operations_1.String.replaceAll(options_1, ': ', '?: ') + ";");
+                        sbData.Append("    " + string_operations_1.String.replaceAll(options_1, ': ', '?: ') );
                     }
                 }
             });
@@ -128,7 +150,8 @@ function printInferredTypes(fileNames, options) {
         return n.endsWith('s') ? n.substring(0, n.length - 1) : n;
     }
 }
-printInferredTypes([fileName], {
-    noEmitOnError: true, noImplicitAny: true,
-    target: ts.ScriptTarget.ES5, module: ts.ModuleKind.CommonJS
-});
+export default printInferredTypes;
+// printInferredTypes([fileName], {
+//     noEmitOnError: true, noImplicitAny: true,
+//     target: ts.ScriptTarget.ES5, module: ts.ModuleKind.CommonJS
+// });

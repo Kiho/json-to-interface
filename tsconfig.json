@@ -1,16 +1,17 @@
 {
     "compilerOptions": {
-        "noImplicitAny": true,
+        "module": "es2015",
+        "target": "es2015",
+        "moduleResolution": "node",
         "diagnostics": true,
         "noImplicitThis": true,
-        "noEmitOnError": true,
-        "allowJs": true,
-        "lib": ["es5", "es6", "dom"],
-        "importHelpers": true
+        "noImplicitReturns": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "allowJs": false,
+        "lib": ["es5", "es2016", "dom"]
     },
-    "target": "ES5",
     "include": [
-        "sample.ts",
         "src/**/*.ts"
     ],
     "exclude": [

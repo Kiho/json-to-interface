@@ -1,8 +1,11 @@
-declare class Svelte {
+declare class Svelte<T> {
   constructor(options: { target: Element, data?: any, store?: any });
 
-  get(name: string);
-  set(data: any);
+//   get(): T;
+//   get(name: string): any;
+  get(name?: string): T;
+
+  set(data: T);
 
   on(
       eventName: string,
@@ -18,4 +21,6 @@ declare class Svelte {
       : () => { cancel: () => any };
 
   teardown();
+
+  oncreate();
 }
