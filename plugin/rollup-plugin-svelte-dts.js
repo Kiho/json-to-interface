@@ -44,10 +44,11 @@ ${js}
 </script>`
                             : html;
                         if (js) {
-							const paths = id.split('/');
+							let paths = id.split('/');
+							if (paths.length === 1) paths = id.split('\\');
 							const name = paths[paths.length - 1];
 							const filePath = baseId + '.ts';
-                            console.log('filePath', filePath);
+                            console.log('name, filePath', name, filePath);
                             writeFileSync(filePath, js.replace('export default ', `let ${name} = `));
 							const dts = printInferredTypes(filePath, name);
 							writeFileSync(`${baseId}.html.d.ts`, dts);

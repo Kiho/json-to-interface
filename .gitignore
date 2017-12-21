@@ -1,5 +1,5 @@
 .DS_Store
 node_modules
 public/css/bundle.min.css
-public/js/bundle.min.js
+public/js/bundle.*
 npm-debug.log.*

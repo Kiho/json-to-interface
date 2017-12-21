@@ -25,16 +25,6 @@ function printInferredTypes(fileName, name, options) {
         var pendingType = pendingTypes.shift();
         printJsonType(pendingType.name, pendingType.symbol);
     }
-    // let output = sbData.ToString();
-    // console.log(`interface IOptions `);
-    // if (output) {
-    //     console.log(output);
-    // }
-    // // console.log(`}`);
-    // output = sbMethods.ToString();
-    // if (output) {
-    //     console.log(output);
-    // }
     var moduleName = capitalize(name.replace('.html', ''));
     var outputOptions = sbData.ToString();
     if (outputOptions) {

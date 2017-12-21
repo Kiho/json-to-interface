@@ -8,50 +8,37 @@ var defaultOptions = {
 };
 function printInferredTypes(fileName, name, options) {
     if (options === void 0) { options = defaultOptions; }
-    // var resultFile;
-    // if (sourceText) {
-    //     resultFile = ts.createSourceFile(fileName, sourceText, ts.ScriptTarget.Latest, /*setParentNodes*/ false, ts.ScriptKind.TS);
-    //     console.log('resultFile', resultFile);
-    // }
     var program = ts.createProgram([fileName], options);
     var checker = program.getTypeChecker();
     var knownTypes = {};
     var pendingTypes = [];
     var sbData = new string_operations_1.StringBuilder('');
     var sbMethods = new string_operations_1.StringBuilder('');
-
     var sbOutput = new string_operations_1.StringBuilder('');
     for (var _i = 0, _a = program.getSourceFiles(); _i < _a.length; _i++) {
         var sourceFile = _a[_i];
         if (sourceFile.fileName == fileName) {
-            console.log("fileName ", sourceFile.fileName);
             ts.forEachChild(sourceFile, visit);
         }
     }
-    // ts.forEachChild(resultFile, visit);
-
     while (pendingTypes.length > 0) {
         var pendingType = pendingTypes.shift();
         printJsonType(pendingType.name, pendingType.symbol);
     }
-    name = capitalize(name.replace('.html', ''));
-    var output = sbData.ToString();
-    sbOutput.Append(`interface ${name}Options`);
-    if (output) {
-        sbOutput.Append(output + '\n');
+    var moduleName = capitalize(name.replace('.html', ''));
+    var outputOptions = sbData.ToString();
+    if (outputOptions) {
+        sbOutput.Append("interface " + moduleName + "Options\n");
     }
-    // console.log(`}`);
-    output = sbMethods.ToString();
-    if (output) {
-        sbOutput.Append(output + '\n');
+    var outputMethods = sbMethods.ToString();
+    if (outputMethods) {
+        sbOutput.Append(outputMethods + '\n');
     }
-    sbOutput.Append(`declare class ${name} extends Svelte<${name}Options>`); 
-    sbOutput.Append(`{ }\n`);
-    sbOutput.Append(`export default ${name}`);
-    const result = sbOutput.ToString();
-    console.log(result);
+    sbOutput.Append("declare class " + moduleName + " extends Svelte<" + moduleName + "Options> { }\n");
+    sbOutput.Append("export default " + moduleName);
+    var result = sbOutput.ToString();
+    // console.log(result);
     return result;
-
     function visit(node) {
         if (node.kind == ts.SyntaxKind.VariableStatement) {
             node.declarationList.declarations.forEach(function (declaration) {
@@ -98,7 +85,7 @@ function printInferredTypes(fileName, name, options) {
                     console.log("    " + k + ": " + typeName + ";");
                     if (k === 'data') {
                         var options_1 = typeName.replace('():', '');
-                        sbData.Append("    " + string_operations_1.String.replaceAll(options_1, ': ', '?: ') );
+                        sbData.Append("    " + string_operations_1.String.replaceAll(options_1, ': ', '?: ') + ";");
                     }
                 }
             });
@@ -151,7 +138,3 @@ function printInferredTypes(fileName, name, options) {
     }
 }
 export default printInferredTypes;
-// printInferredTypes([fileName], {
-//     noEmitOnError: true, noImplicitAny: true,
-//     target: ts.ScriptTarget.ES5, module: ts.ModuleKind.CommonJS
-// });
