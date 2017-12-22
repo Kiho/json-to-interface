@@ -1,5 +1,5 @@
 import serverData from './data';
-import { collect } from '../src/DataTable/data-grid';
+import { collect } from '../DataTable/data-grid';
 
 const artificialDelay = 250;
 
@@ -18,7 +18,7 @@ export default function getList(p) {
         p = Object.assign({}, paginate);
     }
     return getData(p).then(data => {
-        data.getList = getData;
+        (<any>data).getList = getData;
         return  { paged: data };
     });    
 }

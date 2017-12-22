@@ -9,8 +9,14 @@ interface ISearchConfig {
     distance?: number;
 }
 
+interface IDataTable extends DataTable {
+    getPaged(props, pred): void;
+    paginateRows(rows: any[]): void;
+    processRows(rows: any[], searchText?: string): void;
+}
+
 export default {
-    getPaged(this: DataTable, props, pred) {
+    getPaged(this: IDataTable, props, pred) {
         const { page } = props;            
         if (!pred || pred({page: this.get('selectedPage')})) {
             if (page) {
@@ -18,20 +24,20 @@ export default {
             }
             // console.log('getPaged - props', props);	
             this.set(props);
-            (this as any).processRows(this.get('rows'));	
+            this.processRows(this.get('rows'));	
         }
     },
     
-    paginateRows(this: DataTable, rows: any[]) {
+    paginateRows(this: IDataTable, rows: any[]) {
         const { currentPerPage, currentPage, paginate } = this.get();
         let paginatedRows = rows;
         if (paginate)
             paginatedRows = paginatedRows.slice((currentPage - 1) * currentPerPage, currentPerPage === -1 ? paginatedRows.length + 1 : currentPage * currentPerPage);
         this.set({paginated: paginatedRows});
-        console.log('paginatedRows', paginatedRows);
+        // console.log('paginatedRows', paginatedRows);
     },
 
-    processRows(this: DataTable, rows: any[], searchText?: string) {
+    processRows(this: IDataTable, rows: any[], searchText?: string) {
         let computedRows = rows;				
         const { currentPage, currentPerPage, columns,
             sortable, sortColumn, sortType, 
@@ -80,8 +86,7 @@ export default {
         }
 
         const pageCount = Math.ceil(computedRows.length / currentPerPage);
-        this.set({processedRows: computedRows, rowCount: computedRows.length, pageCount});
-        (this as any).paginateRows(computedRows);
+        this.paginateRows(computedRows);
     },
 
     oncreate: function(p: DataTable) {
