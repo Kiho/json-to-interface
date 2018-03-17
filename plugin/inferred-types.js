@@ -1,7 +1,5 @@
-"use strict";
-exports.__esModule = true;
-var ts = require("typescript");
-var string_operations_1 = require("./string-operations");
+import * as ts from "typescript";
+import { String, StringBuilder } from "./string-operations";
 var defaultOptions = {
     noEmitOnError: true, noImplicitAny: true,
     target: ts.ScriptTarget.ES5, module: ts.ModuleKind.CommonJS
@@ -12,9 +10,9 @@ function printInferredTypes(fileName, name, options) {
     var checker = program.getTypeChecker();
     var knownTypes = {};
     var pendingTypes = [];
-    var sbData = new string_operations_1.StringBuilder('');
-    var sbMethods = new string_operations_1.StringBuilder('');
-    var sbOutput = new string_operations_1.StringBuilder('');
+    var sbData = new StringBuilder('');
+    var sbMethods = new StringBuilder('');
+    var sbOutput = new StringBuilder('');
     fileName = fileName.split('\\').join('/');
     for (var _i = 0, _a = program.getSourceFiles(); _i < _a.length; _i++) {
         var sourceFile = _a[_i];
@@ -35,8 +33,8 @@ function printInferredTypes(fileName, name, options) {
     sbOutput.Append("declare class " + moduleName + " extends Svelte<" + moduleName + "Options>\n");
     var outputMethods = sbMethods.ToString();
     if (outputMethods) {
-        outputMethods = outputMethods.split('): ').join(') => ')
-        outputMethods = string_operations_1.String.replaceAll(outputMethods, '; ', ';\n');
+        outputMethods = outputMethods.split('): ').join(' => ');
+        outputMethods = String.replaceAll(outputMethods, '; ', ';\n');
         sbOutput.Append("{\n" + outputMethods + "\n}\n");
     }
     else {
@@ -44,8 +42,6 @@ function printInferredTypes(fileName, name, options) {
     }
     sbOutput.Append("export default " + moduleName);
     var result = sbOutput.ToString();
-    // console.log(result);
-    return result;
     function visit(node) {
         if (node.kind == ts.SyntaxKind.VariableStatement) {
             node.declarationList.declarations.forEach(function (declaration) {
@@ -92,8 +88,8 @@ function printInferredTypes(fileName, name, options) {
                     console.log("    " + k + ": " + typeName + ";");
                     if (k === 'data') {
                         var options_1 = typeName.replace('():', '');
-                        options_1 = string_operations_1.String.replaceAll(options_1, ': ', '?: ');
-                        sbData.Append("    " + string_operations_1.String.replaceAll(options_1, '; ', ';\n'));
+                        options_1 = String.replaceAll(options_1, ': ', '?: ');
+                        sbData.Append("    " + String.replaceAll(options_1, '; ', ';\n'));
                     }
                 }
             });
@@ -137,6 +133,7 @@ function printInferredTypes(fileName, name, options) {
         else {
             return null;
         }
+        return null;
     }
     function capitalize(n) {
         return n.charAt(0).toUpperCase() + n.slice(1);
@@ -144,5 +141,7 @@ function printInferredTypes(fileName, name, options) {
     function stripS(n) {
         return n.endsWith('s') ? n.substring(0, n.length - 1) : n;
     }
+    // console.log(result);
+    return result;
 }
 export default printInferredTypes;

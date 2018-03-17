@@ -42,7 +42,7 @@ function printInferredTypes(fileName: string, name:string, options: ts.CompilerO
 
     let outputMethods = sbMethods.ToString();
     if (outputMethods) {
-        outputMethods = String.replaceAll(outputMethods, '): ', ' => ');
+        outputMethods = outputMethods.split('): ').join(' => ');
         outputMethods = String.replaceAll(outputMethods, '; ', ';\n');
         sbOutput.Append(`{\n${outputMethods}\n}\n`);
     }
@@ -52,8 +52,6 @@ function printInferredTypes(fileName: string, name:string, options: ts.CompilerO
 
     sbOutput.Append(`export default ${moduleName}`);
     const result = sbOutput.ToString();
-    // console.log(result);
-    return result;
 
     function visit(node: ts.Node) {
         if (node.kind == ts.SyntaxKind.VariableStatement) {
@@ -140,6 +138,7 @@ function printInferredTypes(fileName: string, name:string, options: ts.CompilerO
         } else {
             return null;
         }
+        return null;
     }
 
     function capitalize(n: string) {
@@ -148,6 +147,9 @@ function printInferredTypes(fileName: string, name:string, options: ts.CompilerO
     function stripS(n: string) {
         return n.endsWith('s') ? n.substring(0, n.length - 1) : n;
     }
+
+    // console.log(result);
+    return result;
 }
 
 export default printInferredTypes;

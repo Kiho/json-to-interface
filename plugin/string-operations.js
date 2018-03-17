@@ -1,5 +1,3 @@
-"use strict";
-exports.__esModule = true;
 var StringBuilder = /** @class */ (function () {
     function StringBuilder(value) {
         if (value === void 0) { value = String.Empty; }
@@ -24,7 +22,7 @@ var StringBuilder = /** @class */ (function () {
     };
     return StringBuilder;
 }());
-exports.StringBuilder = StringBuilder;
+export { StringBuilder };
 var String = /** @class */ (function () {
     function String() {
     }
@@ -212,4 +210,4 @@ var String = /** @class */ (function () {
     String.Empty = "";
     return String;
 }());
-exports.String = String;
+export { String };

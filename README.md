@@ -4,7 +4,7 @@ Generate TypeScript interface from JSON
 ## How to run
 
     ./node_modules/.bin/tsc --lib es6 print-inferred-types.ts
-    ./node_modules/.bin/tsc --lib es6 inferred-types.ts
+    ./node_modules/.bin/tsc -p ./ts
     node print-inferred-types.js sample.ts
 
 ## Reference

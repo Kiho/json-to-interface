@@ -30,10 +30,10 @@ getList?: (p?: any) => any;
 }
 declare class DataTable extends Svelte<DataTableOptions>
 {
-    search: (e: any) => void;
-   click: (row: any) => void;
-   exportExcel: () => void;
-   print: () => void;
-   sort: (index: any) => void;
+    search: (e: any => void;
+   click: (row: any => void;
+   exportExcel: ( => void;
+   print: ( => void;
+   sort: (index: any => void;
 }
 export default DataTable

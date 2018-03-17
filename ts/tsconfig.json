@@ -1,16 +1,16 @@
 {
     "compilerOptions": {
         "module": "es2015",
-        "target": "es2015",
+        "target": "es5",
         "moduleResolution": "node",
         "diagnostics": true,
         "noImplicitThis": true,
         "noImplicitReturns": true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "allowSyntheticDefaultImports": true,
+        "allowSyntheticDefaultImports": false,
         "allowJs": false,
-        "skipDefaultLibCheck": true,
+        "outDir": "../plugin",
         "lib": [
           "es5",
           "es2015",
@@ -19,7 +19,7 @@
         ]
     },
     "include": [
-        "src/**/*.ts"
+        "./**/*.ts"
     ],
     "exclude": [
         "node_modules"

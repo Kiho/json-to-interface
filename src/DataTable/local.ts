@@ -86,6 +86,7 @@ export default {
         }
 
         const pageCount = Math.ceil(computedRows.length / currentPerPage);
+        this.set({processedRows: computedRows, rowCount: computedRows.length, pageCount});
         this.paginateRows(computedRows);
     },
 
