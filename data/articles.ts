@@ -1,0 +1,1 @@
+let articles = {"title":"sadasda","slug":"sadasda-7dolt1","body":"asdasdasdasdsdasda","createdAt":"2018-03-18T21:44:18.164Z","updatedAt":"2018-03-18T21:44:18.164Z","tagList":[],"description":"asdasdadsda","author":{"username":"sampel","bio":null,"image":"https://static.productionready.io/images/smiley-cyrus.jpg","following":false},"favorited":false,"favoritesCount":1}

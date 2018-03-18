@@ -1,6 +1,6 @@
 {
   "name": "json-to-interface",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Testing json to typescript interface.",
   "keywords": [
     "json",
@@ -8,11 +8,17 @@
     "interface"
   ],
   "scripts": {
+    "start": "node index.js",
+    "build:ts": "tsc -p ts/tsconfig.json"
   },
   "author": "Kiho Chang",
   "private": true,
   "devDependencies": {
     "@types/node": "^9.4.7",
-    "typescript": "^2.7.1"
+    "typescript": "^2.7.1",
+    "ts-node": "^5.0.0"
+  },
+  "dependencies": {
+    "node-fetch": "^2.1.1"
   }
 }

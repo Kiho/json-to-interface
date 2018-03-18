@@ -1,15 +1,30 @@
 import * as ts from "typescript";
+import { String, StringBuilder } from "./string-operations"
 
-let fileName = process.argv[2];
+const defaultOptions = {
+    noEmitOnError: true, noImplicitAny: true,
+    target: ts.ScriptTarget.ES5, module: ts.ModuleKind.CommonJS
+};
 
-function printInferredTypes(fileNames: string[], options: ts.CompilerOptions): void {
-    let program = ts.createProgram(fileNames, options);
+let argFileName: string = process.argv[2];
+if (argFileName) {
+    printInferredTypes(argFileName, 'name', defaultOptions);
+}
+
+function printInferredTypes(fileName: string, name:string, options: ts.CompilerOptions = defaultOptions): string {
+    console.log('fileName', fileName);
+    let program = ts.createProgram([fileName], options);
     let checker = program.getTypeChecker();
 
     let knownTypes: {[name: string]: boolean} = {};
     let pendingTypes: {name: string, symbol: ts.Symbol}[] = [];
 
+    const sbOutput = new StringBuilder('');
+
+    fileName = fileName.split('\\').join('/');
+
     for (const sourceFile of program.getSourceFiles()) {
+        console.log('sourceFile.fileName', sourceFile.fileName, fileName);
         if (sourceFile.fileName == fileName) {
             ts.forEachChild(sourceFile, visit);
         }
@@ -40,6 +55,7 @@ function printInferredTypes(fileNames: string[], options: ts.CompilerOptions): v
     function printJsonType(name: string, symbol: ts.Symbol) {
         if (symbol.members) {
             console.log(`export interface ${capitalize(name)} {`);
+            sbOutput.Append(`export interface ${capitalize(name)} {\r\n`);
             symbol.members.forEach(member => {
                 const k = member.name;
                 let typeName = null;
@@ -51,11 +67,14 @@ function printInferredTypes(fileNames: string[], options: ts.CompilerOptions): v
                 }
                 if (!typeName) {
                     console.log(`// Sorry, could not get type name for ${k}!`);
+                    sbOutput.Append(`    // ${k}: unknown;\r\n`);
                 } else {
                     console.log(`    ${k}: ${typeName};`);
+                    sbOutput.Append(`    ${k}: ${typeName};\r\n`);
                 }
             });
             console.log(`}`);
+            sbOutput.Append(`}\r\n`);
         }
     }
 
@@ -98,9 +117,9 @@ function printInferredTypes(fileNames: string[], options: ts.CompilerOptions): v
     function stripS(n: string) {
         return n.endsWith('s') ? n.substring(0, n.length - 1) : n;
     }
+    const result = sbOutput.ToString();    
+    console.log(result);
+    return result;
 }
 
-printInferredTypes([fileName], {
-    noEmitOnError: true, noImplicitAny: true,
-    target: ts.ScriptTarget.ES5, module: ts.ModuleKind.CommonJS
-});
+export default printInferredTypes;
