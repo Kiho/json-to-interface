@@ -12,7 +12,7 @@
   "author": "Kiho Chang",
   "private": true,
   "devDependencies": {
-    "@types/node": "^8.0.53",
-    "typescript": "^2.6.1"
+    "@types/node": "^9.4.7",
+    "typescript": "^2.7.1"
   }
 }
