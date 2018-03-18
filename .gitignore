@@ -3,3 +3,4 @@ node_modules
 public/css/bundle.min.css
 public/js/bundle.min.js
 npm-debug.log.*
+data/
