@@ -67,7 +67,7 @@ function printInferredTypes(fileName: string, name:string, options: ts.CompilerO
                 }
                 if (!typeName) {
                     console.log(`// Sorry, could not get type name for ${k}!`);
-                    sbOutput.Append(`    // ${k}: unknown;\r\n`);
+                    sbOutput.Append(`    ${k}: any;\r\n`);
                 } else {
                     console.log(`    ${k}: ${typeName};`);
                     sbOutput.Append(`    ${k}: ${typeName};\r\n`);
@@ -95,6 +95,8 @@ function printInferredTypes(fileName: string, name:string, options: ts.CompilerO
                         pendingTypes.push({name: elementTypeName, symbol: elementType.symbol});
                     }
                     return `${elementTypeName}[]`;
+                } else if (memberType.symbol.escapedName == 'Array') {
+                    return 'any[]';
                 }
             } else if (memberType.symbol.name == '__object') {
                 let typeName = capitalize(memberName);
@@ -103,12 +105,13 @@ function printInferredTypes(fileName: string, name:string, options: ts.CompilerO
                     pendingTypes.push({name: typeName, symbol: memberType.symbol});
                 }
                 return typeName;
-            } else {
+            }else {
                 return null;
             }
         } else {
             return null;
         }
+        return null;
     }
 
     function capitalize(n: string) {
