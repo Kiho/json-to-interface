@@ -11,9 +11,9 @@ const readText = filename =>
     );
 
 function writeInterfaceFile(name, data){
-    const filePath = `${folder}\\${name}.ts`; 
+    const filePath = `${folder}\\${name}.json.ts`; 
     const code = printInferredTypes(filePath, name);
-    const targetFilePath = `${folder}\\${name}.i.ts`;
+    const targetFilePath = `${folder}\\${name}.ts`;
     writeFileSync(targetFilePath, code);
 }
 
@@ -24,7 +24,7 @@ async function getData() {
 }
 
 function writeFile(name, data) {
-    const filePath = `data\\${name}.ts`;
+    const filePath = `${folder}\\${name}.json.ts`;
     let json = JSON.stringify(data);
     writeFileSync(filePath, `let ${name} = ${json}`);
     readText(filePath).then(x => {
@@ -37,7 +37,7 @@ getData().then((data: any) => {
         keys.forEach(x => {
             const d = data[x];
             // console.log(x, d);
-            let u = d.articles[0];  
+            let u = d[x][0];  
             console.log(x, u);   
             writeFile(x, u);         
         });
